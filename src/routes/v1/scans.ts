@@ -1,14 +1,12 @@
 import express, {Request, Response} from "express";
 import parser from "../../storage/cloudinary";
 import {ScansRepo} from "../../repos/globalRepos";
+import {hasIdParam} from "../../../middlewares/validators";
 
 const scanRouter = express.Router();
 
-scanRouter.get("/:id", async (req: Request, res: Response) => {
+scanRouter.get("/:id", hasIdParam, async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-        return res.status(400).send({error: "Invalid scan ID."});
-    }
     const scan = await ScansRepo.getScanById(id);
 
     if (scan) {

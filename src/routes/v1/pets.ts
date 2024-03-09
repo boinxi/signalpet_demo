@@ -2,6 +2,7 @@ import express, {Request, Response} from "express";
 
 import {Pet} from "../../types/pet";
 import {PetsRepo, ScansRepo} from "../../repos/globalRepos";
+import {hasIdParam, validatePetCreation, validatePetUpdate} from "../../../middlewares/validators";
 
 const petRouter = express.Router();
 
@@ -9,11 +10,8 @@ petRouter.get("/", async (req: Request, res: Response) => {
     res.send(await PetsRepo.getAllPets());
 });
 
-petRouter.get("/:id", async (req: Request, res: Response) => {
+petRouter.get("/:id", hasIdParam, async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-        return res.status(400).send({error: "Invalid pet ID."});
-    }
     const pet = await PetsRepo.getPetById(id);
 
     if (pet) {
@@ -23,12 +21,8 @@ petRouter.get("/:id", async (req: Request, res: Response) => {
     }
 });
 
-petRouter.post("/", async (req: Request, res: Response) => {
+petRouter.post("/", validatePetCreation, async (req: Request, res: Response) => {
     const {petName, age, breedId} = req.body;
-
-    if (!petName || !age || !breedId) {
-        return res.status(400).send('Missing required fields');
-    }
 
     try {
         const queryRes = await PetsRepo.createPet(petName, breedId, age);
@@ -38,32 +32,17 @@ petRouter.post("/", async (req: Request, res: Response) => {
     }
 });
 
-petRouter.delete("/:id", async (req: Request, res: Response) => {
+petRouter.delete("/:id", hasIdParam, async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-        return res.status(400).send({error: "Invalid pet ID."});
-    }
 
     const queryRes = await PetsRepo.deletePet(id);
     queryRes ? res.status(204).send() : res.status(500).send('Error deleting pet');
 });
 
-petRouter.put("/:id", async (req: Request, res: Response) => {
+petRouter.put("/:id", validatePetUpdate, async (req: Request, res: Response) => {
     const {petName, age, breedId} = req.body;
     const pet: Partial<Pet> = {petName, age, breedId};
     pet.id = parseInt(req.params.id);
-
-    if (isNaN(pet.id)) {
-        return res.status(400).send({error: "Invalid pet ID."});
-    }
-
-    if (!pet.petName && !pet.age && !pet.breedId) {
-        return res.status(400).send({error: "No fields to update."});
-    }
-
-    if (pet.age && pet.age < 0) {
-        return res.status(400).send({error: "Age must be a positive number."});
-    }
 
     try {
         const queryRes = await PetsRepo.updatePet(pet);
@@ -74,11 +53,8 @@ petRouter.put("/:id", async (req: Request, res: Response) => {
     }
 });
 
-petRouter.get("/:petId/scans", async (req: Request, res: Response) => {
-    const petId = parseInt(req.params.petId);
-    if (isNaN(petId)) {
-        return res.status(400).send({error: "Invalid pet ID."});
-    }
+petRouter.get("/:id/scans", hasIdParam, async (req: Request, res: Response) => {
+    const petId = parseInt(req.params.id);
     const scans = await ScansRepo.getAllScansForPet(petId);
 
     res.send(scans);

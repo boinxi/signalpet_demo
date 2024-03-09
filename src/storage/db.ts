@@ -7,7 +7,7 @@ const pool = new Pool({
     user: 'user'
 });
 
-export async function query(text: string, params?: any[]) {
+export async function query<T>(text: string, params?: any[]): Promise<T[]> {
     const res = await pool.query(text, params);
-    return res.rows;
+    return res.rows as T[];
 }

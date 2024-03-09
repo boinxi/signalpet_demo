@@ -2,7 +2,11 @@ import express, {Request, Response} from "express";
 
 import {Pet} from "../../types/pet";
 import {PetsRepo, ScansRepo} from "../../repos/globalRepos";
-import {hasIdParam, validatePetCreation, validatePetUpdate} from "../../../middlewares/validators";
+import {
+    hasIdParam, petCreationSchema,
+    petUpdateSchema,
+    validateRequestBody
+} from "../../../middlewares/validators";
 import {logger} from "../../logger";
 
 const petRouter = express.Router();
@@ -21,7 +25,7 @@ petRouter.get("/:id", hasIdParam, async (req: Request, res: Response) => {
     return res.send(pet);
 });
 
-petRouter.post("/", validatePetCreation, async (req: Request, res: Response) => {
+petRouter.post("/", validateRequestBody(petCreationSchema), async (req: Request, res: Response) => {
     const {petName, age, breedId} = req.body;
 
     try {
@@ -40,7 +44,7 @@ petRouter.delete("/:id", hasIdParam, async (req: Request, res: Response) => {
     queryRes ? res.status(204).send() : res.status(500).send('Error deleting pet');
 });
 
-petRouter.put("/:id", validatePetUpdate, async (req: Request, res: Response) => {
+petRouter.put("/:id", validateRequestBody(petUpdateSchema), async (req: Request, res: Response) => {
     const {petName, age, breedId} = req.body;
     const pet: Partial<Pet> = {petName, age, breedId};
     pet.id = parseInt(req.params.id);
@@ -60,6 +64,5 @@ petRouter.get("/:id/scans", hasIdParam, async (req: Request, res: Response) => {
 
     res.send(scans);
 });
-
 
 export default petRouter;

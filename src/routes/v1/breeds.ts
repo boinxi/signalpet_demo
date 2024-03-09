@@ -1,12 +1,10 @@
 import express, {Request, Response} from "express";
 import {BreedsRepo} from "../../repos/globalRepos";
 import {hasIdParam} from "../../../middlewares/validators";
-import {logger} from "../../logger";
 
 const breedRouter = express.Router();
 
 breedRouter.get('/', async (req: Request, res: Response) => {
-
     res.send(await BreedsRepo.getAllBreeds());
 });
 

@@ -1,11 +1,14 @@
 import {BreedService} from "../services/breedService";
 import {PetService} from "../services/petService";
 import {ScansService} from "../services/scans";
+import {IBreedService} from "../interfaces/IBreedService";
+import {IPetService} from "../interfaces/IPetService";
+import {IScanService} from "../interfaces/IScanService";
 
-const BreedsRepo = new BreedService()
+const BreedsRepo: IBreedService = new BreedService()
 
-const PetsRepo = new PetService();
+const PetsRepo: IPetService = new PetService();
 
-const ScansRepo = new ScansService();
+const ScansRepo: IScanService = new ScansService();
 
 export {BreedsRepo, PetsRepo, ScansRepo};

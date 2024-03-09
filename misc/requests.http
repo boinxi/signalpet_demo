@@ -1,0 +1,58 @@
+### =====================
+### Breeds
+### =====================
+
+### Get All Breeds v
+GET http://localhost:3000/v1/breeds
+
+### Get Breed by ID v
+GET http://localhost:3000/v1/breeds/1
+
+### =====================
+### Pets
+### =====================
+
+### Get All Pets v
+GET http://localhost:3000/v1/pets
+
+### Get Pet by ID v
+GET http://localhost:3000/v1/pets/1
+
+### Delete Pet by ID v
+DELETE http://localhost:3000/v1/pets/1
+
+### Create New Pet - Required fields: petName, age, breedId v
+POST http://localhost:3000/v1/pets
+Content-Type: application/json
+
+{
+  "petName": "Max",
+  "age": 3,
+  "breedId": 1
+}
+
+### Update Existing Pet, Required fields: petName, age, breedId (At least one) v
+PUT http://localhost:3000/v1/pets/1
+Content-Type: application/json
+
+{
+  "petName": "Buddy",
+  "age": 4,
+  "breedId": 2
+}
+
+### Get All Scans for a Pet
+GET http://localhost:3000/v1/pets/1/scans
+
+### =====================
+### Scans
+### =====================
+
+### Get Scan by ID
+GET http://localhost:3000/v1/scans/3
+
+### Post New Scan with Image
+# Note: This request cannot be directly executed from an HTTP file due to file upload requirements.
+# You need to use a tool like Postman, setting the body to 'form-data', including 'petId' as a text field and 'image' as a file field.
+POST http://localhost:3000/v1/scans
+Content-Type: multipart/form-data
